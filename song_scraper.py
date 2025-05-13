@@ -12,7 +12,7 @@ def get_spotify_client():
         client_secret=os.getenv('SPOTIPY_CLIENT_SECRET')      # expects SPOTIPY_CLIENT_SECRET in .env
     ))
 
-def get_top_tracks_from_playlist(playlist_id, year, n=50):
+def get_top_tracks_from_playlist(playlist_id, year, n):
     sp = get_spotify_client()
     results = sp.playlist_items(playlist_id, limit=n)
     tracks = results['items']
@@ -45,13 +45,39 @@ def write_csv(songs_data, filename):
     print(f"CSV file '{filename}' created with {len(songs_data)} songs.")
     
 if __name__ == '__main__':
-    year_playlists = {} # link to page: https://open.spotify.com/user/125382564/playlists
+    year_playlists = {
+        2000:'https://open.spotify.com/playlist/3ZnAcblT0kJSxBoNDyjVmi?si=IbvUXp2WS76u8CxbPnjABw',
+        2001:'https://open.spotify.com/playlist/1PY76KImg5m78MafOavzzT?si=7oZ7DlxDSne8_w3QepGvMQ',
+        2002: 'https://open.spotify.com/playlist/31orNwRGta1pVcTEbb1Rig?si=h0X6C0maQye83dtFfvd5jw',
+        2003: 'https://open.spotify.com/playlist/0dxgrFpByUvzGwQB6LlUC6?si=l86yJS2FQnOg9NtUrKqXlw',
+        2004: 'https://open.spotify.com/playlist/3pM6OEFeTo4L1yd4eRltjL?si=m8Q5FjyhR8qhNYg2_YT-IA',
+        2005: 'https://open.spotify.com/playlist/0a3zRGDDLL1nwZmIuQT8LP?si=iRkwLlDLQnK7uyMyAH7hMw',
+        2006: 'https://open.spotify.com/playlist/2NYo0q9T7NFPE24XB4IPuA?si=k9uMzMGERtO0PDgCLn54Hg',
+        2007: 'https://open.spotify.com/playlist/0sNsM6d2k9jurLXB0QRYH7?si=JfFtq3TWSR2a1TI49gVI9Q',
+        2008: 'https://open.spotify.com/playlist/0EIOwG3l57IeUNMYopujrL?si=NtnD6NEwQ7WXU4pRfrNR9g',
+        2009: 'https://open.spotify.com/playlist/3HoMt2eIHGueEAT3LP8HjI?si=HFpbWxybTxySxMbgeIvQbw',
+        2010: 'https://open.spotify.com/playlist/3iz6BGeQFOv4bSAKpTOzIN?si=ZFfaxAm5QIejOfsrCtAQbQ',
+        2011: 'https://open.spotify.com/playlist/3McBfDOrmbD1g8Gki4Ry8U?si=KfArrwr6QDWgqM36iw-Rfg',
+        2012: 'https://open.spotify.com/playlist/3mmG90Ig9YrdZOH7yDQJVp?si=A2aAkpx1QYu5KnPUN_4LTw',
+        2013: 'https://open.spotify.com/playlist/49USVFK89mquEevzyoWwV7?si=9PwelxN3RbOGKWGloZuPeQ',
+        2014: 'https://open.spotify.com/playlist/5KpUsCuhv4kN4LzSdIvaG8?si=uV1iLk9zQ5KIMbkNymFdUQ',
+        2015: 'https://open.spotify.com/playlist/20K12yslgchif3E69cjAYz?si=qWoICYubQzysAABiq1SBYQ',
+        2016: 'https://open.spotify.com/playlist/0a41v1jx28RyoDHhKi5DJR?si=p2I_ky4xRUSPYhARyNnxEg',
+        2017: 'https://open.spotify.com/playlist/0yWHPqOEM9olSXpEaagxc6?si=mE8a7Rl_Qyy38RXdi-AKAw',
+        2018: 'https://open.spotify.com/playlist/5TgwU962oxYOeAF3lnKONs?si=3yxp7kL8Ta2OxOC9tEE8Eg',
+        2019: 'https://open.spotify.com/playlist/78NSwK8U2PdNGBmkrI5i66?si=fUyf2jV2Teul33c9sY5PQw',
+        2020: 'https://open.spotify.com/playlist/4jSVL6ZfBtvzrWmmPSTgkI?si=9_aCIQp_TwaBJXZcPGueBw',
+        2021: 'https://open.spotify.com/playlist/5GhQiRkGuqzpWZSE7OU4Se?si=txi_65LaSQCcKyyMuMR8qA',
+        2022: 'https://open.spotify.com/playlist/56r5qRUv3jSxADdmBkhcz7?si=rqYKZA7ZTKqosy8JvQLMpg',
+        2023: 'https://open.spotify.com/playlist/6unJBM7ZGitZYFJKkO0e4P?si=vVEL7g0iRnmlkAU2kevdzQ',
+        2024: 'https://open.spotify.com/playlist/774kUuKDzLa8ieaSmi8IfS?si=iP8T6YYmRt-qEVAS7lSkhQ',
+        } # link to page: https://open.spotify.com/user/125382564/playlists
     
     # pull data from spotify
     all_songs_data = []
     for year, playlist_id in year_playlists.items():
         print(f"Fetching top tracks for {year} from playlist {playlist_id}...")
-        songs_data = get_top_tracks_from_playlist(playlist_id, year, n=50)
+        songs_data = get_top_tracks_from_playlist(playlist_id, year, n=100)
         all_songs_data.extend(songs_data)
     
     # save to csv    
