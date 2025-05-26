@@ -7,17 +7,25 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def get_spotify_client():
+    """this function initializes and returns a Spotify client using Spotipy."""
     return spotipy.Spotify(auth_manager=SpotifyClientCredentials(
         client_id=os.getenv('SPOTIPY_CLIENT_ID'),         # expects SPOTIPY_CLIENT_ID in .env
         client_secret=os.getenv('SPOTIPY_CLIENT_SECRET')      # expects SPOTIPY_CLIENT_SECRET in .env
     ))
 
 def get_top_tracks_from_playlist(playlist_id, year, n):
+    """
+    this function fetches the top tracks from a Spotify playlist for a given year.
+    it takes the playlist ID, year, and number of tracks to fetch as input.
+    it returns a list of dictionaries containing song details.
+    """
     sp = get_spotify_client()
     results = sp.playlist_items(playlist_id, limit=n)
     tracks = results['items']
     
     songs_data = []
+    
+    # iterate through the tracks and extract relevant information
     for item in tracks:
         track = item.get('track')
         if not track:
@@ -31,20 +39,29 @@ def get_top_tracks_from_playlist(playlist_id, year, n):
             "release_date": track.get('album', {}).get('release_date')
         }
         songs_data.append(track_data)
+        
     return songs_data
 
 def write_csv(songs_data, filename):
+    """ this function writes the list of song dictionaries to a CSV file."""
     if not songs_data:
         print("No songs data to write.")
         return
+    
+    # get the keys from the first song dictionary to use as CSV headers
     keys = songs_data[0].keys()
+    
+    # create a CSV file with the song data
     with open(filename, 'w', newline='', encoding='utf-8') as output_file:
         dict_writer = csv.DictWriter(output_file, fieldnames=keys)
         dict_writer.writeheader()
         dict_writer.writerows(songs_data)
+        
     print(f"CSV file '{filename}' created with {len(songs_data)} songs.")
     
 if __name__ == '__main__':
+    # playlists of hit songs from 2020-2024
+    # link to page: https://open.spotify.com/user/125382564/playlists
     year_playlists = {
         2000:'https://open.spotify.com/playlist/3ZnAcblT0kJSxBoNDyjVmi?si=IbvUXp2WS76u8CxbPnjABw',
         2001:'https://open.spotify.com/playlist/1PY76KImg5m78MafOavzzT?si=7oZ7DlxDSne8_w3QepGvMQ',
@@ -71,7 +88,7 @@ if __name__ == '__main__':
         2022: 'https://open.spotify.com/playlist/56r5qRUv3jSxADdmBkhcz7?si=rqYKZA7ZTKqosy8JvQLMpg',
         2023: 'https://open.spotify.com/playlist/6unJBM7ZGitZYFJKkO0e4P?si=vVEL7g0iRnmlkAU2kevdzQ',
         2024: 'https://open.spotify.com/playlist/774kUuKDzLa8ieaSmi8IfS?si=iP8T6YYmRt-qEVAS7lSkhQ',
-        } # link to page: https://open.spotify.com/user/125382564/playlists
+        }
     
     # pull data from spotify
     all_songs_data = []

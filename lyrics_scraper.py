@@ -15,6 +15,10 @@ INPUT_CSV = 'top_songs_by_year.csv'
 OUTPUT_CSV = 'top_songs_with_lyrics.csv'
 
 def get_lyrics(song_name, artist):
+    """
+    this function fetches lyrics for a given song and artist using the Genius API.
+    it takes the song name and artist as input and returns the lyrics or an empty string if not found.
+    """
     try:
         song = genius.search_song(song_name, artist)
         if song:
@@ -26,6 +30,7 @@ def get_lyrics(song_name, artist):
 if __name__ == '__main__':
     all_rows = []
     
+    # Read the input CSV file and fetch lyrics for each song
     with open(INPUT_CSV, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
         fieldnames = reader.fieldnames + ['lyrics']
@@ -38,6 +43,7 @@ if __name__ == '__main__':
             all_rows.append(row)
             time.sleep(1)  # Delay to avoid rate limiting
             
+    # Write the updated rows with lyrics to a new CSV file   
     with open(OUTPUT_CSV, 'w', newline='', encoding='utf-8') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
